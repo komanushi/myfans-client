@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "myfans-client"
+version = "0.1.0"
+description = ""
+authors = ["komanushi <155377273+komanushi@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+httpx = "^0.27.0"
+pydantic = "^2.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
