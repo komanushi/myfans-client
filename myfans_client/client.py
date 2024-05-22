@@ -1,9 +1,15 @@
 from __future__ import annotations
 
+import time
+from typing import Generator
+
 import httpx
 
 from myfans_client.exceptions import MyFansException
+from myfans_client.models.follow import FollowUser
+
 # https://api.myfans.jp/api/v2/users/f6257cde-61cc-428f-834b-c95d138d21fb/followers?page=1
+# https://api.myfans.jp/api/v2/users/show_by_username?username=XXXX
 
 
 class MyFansClient:
@@ -38,6 +44,9 @@ class MyFansClient:
             'google-ga-data': 'event328',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
         }
+        if self._xsrf_token:
+            base['Authorization'] = f'Token token={self._xsrf_token}'
+
         return base
 
     def login(self) -> bool:
@@ -51,9 +60,84 @@ class MyFansClient:
                 },
                 headers=self.header,
             )
+            self._xsrf_token = res['token']
+
             return True
         except MyFansException as e:
             raise e
+
+
+    def get_follows(self, user_id: str, start_page: int = 1, max_page: int = 10) -> Generator[FollowUser, None, None]:
+        """
+        url:
+        https://api.myfans.jp/api/v2/users/USER_ID/following?page=1
+        response:
+        {
+            "data": [
+                {
+                    "about": null,
+                    "avatar_url": "https://p1.cdn.myfans.jp/static/XXXX.png",
+                    "banner_url": "https://p1.cdn.myfans.jp/static/XXXX.png",
+                    "id": "XXXXXX",
+                    "likes_count": 0,
+                    "name": "hoge",
+                    "username": "hoge",
+                    "active": true,
+                    "cant_receive_message": false,
+                    "is_following": false
+                },
+                :
+            ],
+            "pagination": {
+                "current": 2,
+                "previous": 1,
+                "next": 3 -- Optional[int]
+            }
+        }
+        """
+        page = start_page
+        while True:
+            try:
+                res_json = self._get(
+                    f'api/v2/users/{user_id}/following?page={page}',
+                    headers=self.header
+                )
+            except MyFansException as e:
+                raise MyFansException(
+                    f'failed get follows of {user_id} page {page} [{e}]'
+                )
+
+            for f in res_json['data']:
+                yield FollowUser(**f)
+
+            pagination = res_json['pagination']
+            if pagination['next'] is None or pagination['current'] == max_page:
+                break
+            page += 1
+            time.sleep(0.5)
+
+    def get_followed(self, user_id: str, start_page: int = 1, max_page: int = 10) -> Generator[User, None, None]:
+
+        page = start_page
+        while True:
+            try:
+                res_json = self._get(
+                    f'api/v2/users/{user_id}/followers?page={page}',
+                    headers=self.header
+                )
+            except MyFansException as e:
+                raise MyFansException(
+                    f'failed get follows of {user_id} page {page} [{e}]'
+                )
+
+            for f in res_json['data']:
+                yield FollowUser(**f)
+
+            pagination = res_json['pagination']
+            if pagination['next'] is None or pagination['current'] == max_page:
+                break
+            page += 1
+            time.sleep(0.5)
 
     def _post(self, path: str, *arg, **kwargs):
         return self._request('POST', path, *arg, **kwargs)
