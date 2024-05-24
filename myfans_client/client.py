@@ -37,7 +37,7 @@ class MyFansClient:
     @property
     def header(self):
         base = {
-            'Accept': 'application/json',
+            'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json',
             'Origin': 'https://myfans.jp',
             'Referer': 'https://myfans.jp/',
@@ -65,7 +65,6 @@ class MyFansClient:
             return True
         except MyFansException as e:
             raise e
-
 
     def get_follows(self, user_id: str, start_page: int = 1, max_page: int = 10) -> Generator[FollowUser, None, None]:
         """
@@ -139,6 +138,30 @@ class MyFansClient:
             page += 1
             time.sleep(0.5)
 
+    def follow(self, user_id: str) -> bool:
+        """
+        POST https://api.myfans.jp/api/v1/users/USER_ID/follow
+        true or false
+        """
+
+        is_followed = self._post(
+            f'api/v1/users/{user_id}/follow',
+            headers=self.header,
+        )
+        return is_followed
+
+    def unfollow(self, user_id: str) -> bool:
+        """
+        POST https://api.myfans.jp/api/v1/users/USER_ID/unfollow
+        true or false
+        """
+
+        is_followed = self._post(
+            f'api/v1/users/{user_id}/unfollow',
+            headers=self.header,
+        )
+        return is_followed
+
     def _post(self, path: str, *arg, **kwargs):
         return self._request('POST', path, *arg, **kwargs)
 
@@ -152,7 +175,8 @@ class MyFansClient:
         url = f'{self.base_url}/{path}'
         response = self._session.request(method, url, *arg, **kwargs)
         response_json = response.json()
-        if 'error' in response_json:
+
+        if isinstance(response_json, dict) and 'error' in response_json:
             raise MyFansException(response_json['error'])
 
         return response_json

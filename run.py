@@ -1,4 +1,5 @@
 import os
+import time
 from myfans_client.client import MyFansClient
 
 client = MyFansClient(
@@ -8,16 +9,22 @@ client = MyFansClient(
 )
 
 # b402b98e-b3f1-491b-b572-341b7a17dc7f
-for row in client.get_follows(
-    user_id='b402b98e-b3f1-491b-b572-341b7a17dc7f',
-    start_page=1,
-    max_page=2
-):
-    print(row)
+# for row in client.get_follows(
+#     user_id='b402b98e-b3f1-491b-b572-341b7a17dc7f',
+#     start_page=1,
+#     max_page=2
+# ):
+#     print(row)
+#
+# for row in client.get_followed(
+#     user_id='b402b98e-b3f1-491b-b572-341b7a17dc7f',
+#     start_page=1,
+#     max_page=2
+# ):
+#     print(row)
 
-for row in client.get_followed(
-    user_id='b402b98e-b3f1-491b-b572-341b7a17dc7f',
-    start_page=1,
-    max_page=2
-):
-    print(row)
+# 8b7f99ec-4a76-4ed2-a673-15e352fa45c0
+
+client.follow('8b7f99ec-4a76-4ed2-a673-15e352fa45c0')
+time.sleep(10)
+client.unfollow('8b7f99ec-4a76-4ed2-a673-15e352fa45c0')
