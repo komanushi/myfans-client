@@ -25,6 +25,5 @@ client = MyFansClient(
 
 # 8b7f99ec-4a76-4ed2-a673-15e352fa45c0
 
-client.follow('8b7f99ec-4a76-4ed2-a673-15e352fa45c0')
-time.sleep(10)
-client.unfollow('8b7f99ec-4a76-4ed2-a673-15e352fa45c0')
+res = client.get_users('757a2030-288e-4617-be03-bf107cab8037')
+print(res)

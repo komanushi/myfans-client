@@ -7,6 +7,7 @@ import httpx
 
 from myfans_client.exceptions import MyFansException
 from myfans_client.models.follow import FollowUser
+from myfans_client.models.user import UserProfile
 
 # https://api.myfans.jp/api/v2/users/f6257cde-61cc-428f-834b-c95d138d21fb/followers?page=1
 # https://api.myfans.jp/api/v2/users/show_by_username?username=XXXX
@@ -161,6 +162,26 @@ class MyFansClient:
             headers=self.header,
         )
         return is_followed
+
+    def show_by_username(self, username: str) -> UserProfile:
+        """
+        GET https://api.myfans.jp/api/v2/users/show_by_username?username=USERNAME
+        """
+        res = self._get(
+            f'api/v2/users/show_by_username?username={username}',
+            headers=self.header,
+        )
+        return UserProfile(**res)
+
+    def get_users(self, user_code: str) -> UserProfile:
+        """
+        GET https://api.myfans.jp/api/v1/users/USER_CODE
+        """
+        res = self._get(
+            f'api/v1/users/{user_code}',
+            headers=self.header,
+        )
+        return UserProfile(**res)
 
     def _post(self, path: str, *arg, **kwargs):
         return self._request('POST', path, *arg, **kwargs)
