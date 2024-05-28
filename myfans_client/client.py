@@ -171,6 +171,7 @@ class MyFansClient:
             f'api/v2/users/show_by_username?username={username}',
             headers=self.header,
         )
+        print(res)
         return UserProfile(**res)
 
     def get_users(self, user_code: str) -> UserProfile:

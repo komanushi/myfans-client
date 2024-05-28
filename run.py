@@ -25,5 +25,5 @@ client = MyFansClient(
 
 # 8b7f99ec-4a76-4ed2-a673-15e352fa45c0
 
-res = client.get_users('757a2030-288e-4617-be03-bf107cab8037')
+res = client.show_by_username('omega6488a')
 print(res)

@@ -2,6 +2,22 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+class Plan(BaseModel):
+    id: str
+    product_name: str
+    monthly_price: int
+    status: str
+    is_limited_access: bool
+    disallow_new_subscriber: bool
+    active_discount: Optional[str] = None
+    description: str
+    posts_count: int
+    is_back_number: bool
+    flag: Optional[str] = None
+    welcome_message: str
+    plan_discounts: Optional[str] = None
+
+
 class UserProfile(BaseModel):
     about: Optional[str] = None
     active: bool
@@ -10,7 +26,7 @@ class UserProfile(BaseModel):
     back_number_post_videos_count: int
     banner_url: str
     cant_receive_message: bool
-    current_back_number_plan: Optional[str] = None
+    current_back_number_plan: Optional[Plan] = None
     followers_count: int
     followings_count: int
     has_approved_user_identification: bool
