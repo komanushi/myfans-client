@@ -116,7 +116,7 @@ class MyFansClient:
             page += 1
             time.sleep(0.5)
 
-    def get_followed(self, user_id: str, start_page: int = 1, max_page: int = 10) -> Generator[User, None, None]:
+    def get_followed(self, user_id: str, start_page: int = 1, max_page: int = 10) -> Generator[FollowUser, None, None]:
 
         page = start_page
         while True:
@@ -171,7 +171,6 @@ class MyFansClient:
             f'api/v2/users/show_by_username?username={username}',
             headers=self.header,
         )
-        print(res)
         return UserProfile(**res)
 
     def get_users(self, user_code: str) -> UserProfile:
