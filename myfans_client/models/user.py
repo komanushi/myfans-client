@@ -15,7 +15,7 @@ class Plan(BaseModel):
     is_back_number: bool
     flag: Optional[str] = None
     welcome_message: str
-    plan_discounts: Optional[str] = None
+    plan_discounts: Optional[list[str]] = []
 
 
 class UserProfile(BaseModel):
