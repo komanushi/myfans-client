@@ -39,7 +39,7 @@ class UserProfile(BaseModel):
     is_subscribed: bool
     label: Optional[str] = None
     likes_count: int
-    limited_posts_count: int
+    limited_posts_count: Optional[int] = None
     link_instagram_id: Optional[str] = None
     link_instagram_url: Optional[str] = None
     link_tiktok_id: Optional[str] = None
